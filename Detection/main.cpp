@@ -11,6 +11,7 @@ double calcPCAOrientation(vector<Point> &pts, Mat &image);
 int main(int argv, char** argc)
 {
 	string path = "./image/pca/pca_test1.jpg";
+	//string path = "./image/first_girl/beauty.png";
 	Mat src = imread(path);
 
 	if (src.empty())
