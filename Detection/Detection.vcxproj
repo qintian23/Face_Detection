@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClInclude Include="Cache.h" />
     <ClInclude Include="Contour.h" />
+    <ClInclude Include="PCA.h" />
     <ClInclude Include="PostProcessing.h" />
     <ClInclude Include="RGBchannel.h" />
     <ClInclude Include="TemplateMatching.h" />
