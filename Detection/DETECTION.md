@@ -12,3 +12,7 @@
 * 特征脸
 
 开始--读取训练数据--计算平均脸--计算协方差矩阵--计算特征值--特征矩阵--PCA降维--子空间模型--检测/距离
+
+下载opencv的工具：
+https://github.com/opencv/opencv_contrib/tags
+选择适合自己版本的下载。

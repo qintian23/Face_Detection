@@ -1,5 +1,6 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/face.hpp>
 #include <stdio.h>
 #include <vector>
 #include <iostream>
@@ -7,6 +8,7 @@
 
 using namespace std;
 using namespace cv;
+using namespace cv::face;
 
 int main(int argv, char** argc)
 {
@@ -33,7 +35,7 @@ int main(int argv, char** argc)
 		getline(liness, classlabel);
 		if (!path.empty() && !classlabel.empty())
 		{
-			printf("path : %s\n", path.c_str());
+			//printf("path : %s\n", path.c_str());
 			images.push_back(imread(path, 0));
 			labels.push_back(atoi(classlabel.c_str()));
 		}
@@ -47,6 +49,19 @@ int main(int argv, char** argc)
 	int height = images[0].rows;
 	int width = images[0].cols;
 	printf("height: %d, width: %d\n", height, width);
+
+	Mat testSample = images[images.size() - 1];
+	int testLabel = labels[labels.size() - 1];
+	images.pop_back();
+	labels.pop_back();
+
+	// train it
+	Ptr<BasicFaceRecognizer> model = EigenFaceRecognizer::create();
+	model->train(images, labels);
+
+	// recognition face
+	int predictedLabel = model->predict(testSample);
+	printf("actual label: %d, predict label: %d\n", testLabel, predictedLabel);
 
 	waitKey(0);
 	return 0;
