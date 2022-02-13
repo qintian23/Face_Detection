@@ -8,6 +8,8 @@ using namespace std;
 using namespace cv;
 using namespace cv::face;
 
+void EigenFace_Demo(vector<Mat> images, vector<int> labels);
+
 int main(int argv, char** argc)
 {
 	//string path = ".//image//ORL_Faces//s1//1.pgm";
@@ -44,6 +46,14 @@ int main(int argv, char** argc)
 		return -1;
 	}
 
+	EigenFace_Demo(images, labels);
+
+	waitKey(0);
+	return 0;
+}
+
+void EigenFace_Demo(vector<Mat> images, vector<int> labels)
+{
 	int height = images[0].rows;
 	int width = images[0].cols;
 	printf("height: %d, width: %d\n", height, width);
@@ -107,7 +117,4 @@ int main(int argv, char** argc)
 		sprintf(winTitle, "recon_face_%d", num);
 		imshow(winTitle, reconstruction);
 	}
-
-	waitKey(0);
-	return 0;
 }
