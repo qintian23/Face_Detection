@@ -43,5 +43,8 @@
     <ClInclude Include="PCA.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ClassicFaceRecognition.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
