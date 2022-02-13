@@ -12,6 +12,7 @@ using namespace cv::face;
 
 void EigenFace_Demo(vector<Mat> images, vector<int> labels);
 void FisherFace_Demo(vector<Mat> images, vector<int> labels);
+void LBPHFace_Demo(vector<Mat> images, vector<int> labels);
 void Normalizer(Mat intput, Mat& output);
 void ShowFace(Mat facevector, int start, int end, int step, int height);
 void RconFace(Mat facevector, Mat meanface, int start, int end, int step, int height, int Type, vector<Mat> images);
@@ -52,8 +53,9 @@ int main(int argv, char** argc)
 		return -1;
 	}
 
-	EigenFace_Demo(images, labels);
+	//EigenFace_Demo(images, labels);
 	//FisherFace_Demo(images, labels);
+	LBPHFace_Demo(images, labels);
 
 	waitKey(0);
 	return 0;
@@ -125,6 +127,33 @@ void FisherFace_Demo(vector<Mat> images, vector<int> labels)
 
 	// 重建人脸
 	RconFace(eigenvectors, mean, 0, min(16, eigenvectors.cols), 1, height, 1, images);
+}
+
+void LBPHFace_Demo(vector<Mat> images, vector<int> labels)
+{
+	int height = images[0].rows;
+	int width = images[0].cols;
+	printf("height: %d, width: %d\n", height, width);
+
+	Mat testSample = images[images.size() - 1];
+	int testLabel = labels[labels.size() - 1];
+	images.pop_back();
+	labels.pop_back();
+
+	// train it
+	Ptr<LBPHFaceRecognizer> model = LBPHFaceRecognizer::create();
+	model->train(images, labels);
+
+	// recognition face
+	int predictedLabel = model->predict(testSample);
+	printf("actual label: %d, predict label: %d\n", testLabel, predictedLabel);
+
+	// print parameters     
+	printf("radius : %d\n", model->getRadius());//中心像素点到周围像素点的距离
+	printf("neibs : %d\n", model->getNeighbors());//周围像素点的个数
+	printf("grad_x : %d\n", model->getGridX());//将一张图片在x方向分成几块
+	printf("grad_y : %d\n", model->getGridY()); //将一张图片在y方向分成几块
+	printf("threshold : %.2f\n\n", model->getThreshold());//相似度阈值   
 }
 
 void Normalizer(Mat intput, Mat& output)
