@@ -149,6 +149,7 @@
     <ClInclude Include="Cache.h" />
     <ClInclude Include="ClassicFaceRecognition.h" />
     <ClInclude Include="Contour.h" />
+    <ClInclude Include="OnGoing.h" />
     <ClInclude Include="PCA.h" />
     <ClInclude Include="PostProcessing.h" />
     <ClInclude Include="RGBchannel.h" />

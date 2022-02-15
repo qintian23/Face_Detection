@@ -1,3 +1,33 @@
 ﻿  main.cpp
-G:\zuoye\YangYi\Face_Detection\Detection\main.cpp(38,10): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+G:\zuoye\YangYi\Face_Detection\Detection\main.cpp(29,13): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+G:\zuoye\YangYi\Face_Detection\Detection\main.cpp(75,68): warning C4244: “参数”: 从“double”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+G:\zuoye\YangYi\Face_Detection\Detection\main.cpp(75,33): warning C4244: “参数”: 从“double”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+G:\zuoye\YangYi\Face_Detection\Detection\main.cpp(76,75): warning C4244: “参数”: 从“double”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+G:\zuoye\YangYi\Face_Detection\Detection\main.cpp(76,52): warning C4244: “参数”: 从“double”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+G:\zuoye\YangYi\Face_Detection\Detection\main.cpp(86,95): warning C4244: “参数”: 从“double”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
+G:\zuoye\YangYi\Face_Detection\Detection\main.cpp(86,49): warning C4244: “参数”: 从“double”转换到“_Tp”，可能丢失数据
+          with
+          [
+              _Tp=int
+          ]
   Detection.vcxproj -> G:\zuoye\YangYi\Face_Detection\x64\Debug\Detection.exe

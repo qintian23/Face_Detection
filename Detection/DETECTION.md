@@ -16,3 +16,7 @@
 下载opencv的工具：
 https://github.com/opencv/opencv_contrib/tags
 选择适合自己版本的下载。
+
+https://www.cnblogs.com/qxym2016/p/7103273.html?utm_source=itdadao
+
+https://blog.csdn.net/qinchang1/article/details/105776132/
