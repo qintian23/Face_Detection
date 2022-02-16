@@ -1,94 +1,130 @@
-#include <opencv2/opencv.hpp>
+#include "ClassicFaceRecognition.h"
 #include <iostream>
-#include <stdio.h>
 
-using namespace std;
 using namespace cv;
+using namespace std;
 
-/** 函数声明 */
-void detectAndDisplay(Mat frame);
+string haar_face_datapath = ".//data//haarcascade_frontalface_alt_tree.xml";
+void Collect_Face();
+int FaceRecognition(string filename);
 
-/** 全局变量 */
-string face_cascade_name = ".//data//haarcascade_frontalface_alt.xml";
-string eyes_cascade_name = ".//data//haarcascade_eye_tree_eyeglasses.xml";
-CascadeClassifier face_cascade;
-CascadeClassifier eyes_cascade;
-string window_name = "Capture - Face detection";
-RNG rng(12345);
+int pits = 0;
 
-/** @主函数 */
-int main(int argc, const char** argv)
+int main(void)
 {
-    VideoCapture capture(0); // open camera
-    if (!capture.isOpened())
-    {
-        cout << "could not open camera..." << endl;
-        return 0;
-    }
-    Size S = Size((int)capture.get(CAP_PROP_FRAME_WIDTH), (int)capture.get(CAP_PROP_FRAME_HEIGHT));
-    int fps = capture.get(CAP_PROP_FPS);
+	//Collect_Face();
+	string filename = string(".//image//myface//image.csv"); // 上传之后，已把本人的照片删掉，首次使用时，应先运行Collect_Face()；
+	//ClassicFaceRecongnitiion(OPERATIONS::EIGENFACER, filename);
 
-    Mat frame;
-
-    //-- 1. 加载级联分类器文件
-    if (!face_cascade.load(face_cascade_name)) { printf("--(!)Error loading\n"); return -1; };
-    if (!eyes_cascade.load(eyes_cascade_name)) { printf("--(!)Error loading\n"); return -1; };
-
-    //-- 2. 打开内置摄像头视频流
-    namedWindow(window_name, WINDOW_AUTOSIZE);
-    vector<Rect> faces;
-    Mat frame_gray;
-    while (capture.read(frame))
-    {
-        flip(frame, frame, 1);
-        //-- 3. 对当前帧使用分类器进行检测
-        if (!frame.empty())
-            detectAndDisplay(frame);
-        else
-        {
-            printf(" --(!) No captured frame -- Break!");
-            break;
-        }
-        //-- 显示结果图像
-        imshow(window_name, frame);
-
-        int c = waitKey(10);
-        if ((char)c == 'c') { break; }
-    }
-
-    //waitKey(0);
-    return 0;
+	/*Mat src = imread(".//image//ORL_Faces//s1//10.pgm");
+	printf("row: %d, col: %d\n", src.rows, src.cols);
+	imshow("src", src);*/
+	FaceRecognition(filename);
+	
+	return 0;
 }
 
-void detectAndDisplay(Mat frame)
+
+// 采集人脸
+void Collect_Face()
 {
-    vector<Rect> faces;
-    Mat frame_gray;
+	VideoCapture capture(0); // open camera
+	if (!capture.isOpened())
+	{
+		cout << "could not open camera..." << endl;
+		return;
+	}
+	Size S = Size((int)capture.get(CAP_PROP_FRAME_WIDTH), (int)capture.get(CAP_PROP_FRAME_HEIGHT));
+	int fps = capture.get(CAP_PROP_FPS);
 
-    cvtColor(frame, frame_gray, COLOR_BGR2GRAY);
-    equalizeHist(frame_gray, frame_gray);
-    //-- 多尺寸检测人脸
-    face_cascade.detectMultiScale(frame_gray, faces, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
+	CascadeClassifier faceDetector;
+	faceDetector.load(haar_face_datapath);
 
-    for (int i = 0; i < faces.size(); i++)
-    {
-        Point center(faces[i].x + faces[i].width * 0.5, faces[i].y + faces[i].height * 0.5);
-        ellipse(frame, center, Size(faces[i].width * 0.5, faces[i].height * 0.5), 0, 0, 360, Scalar(255, 0, 255), 4, 8, 0);
+	Mat frame;
+	namedWindow("camera-demo", WINDOW_AUTOSIZE);
+	vector<Rect> faces;
+	int count = 0;
+	while (capture.read(frame))
+	{
+		flip(frame, frame, 1);
+		faceDetector.detectMultiScale(frame, faces, 1.1, 1, 0, Size(100, 120), Size(380, 400));
+		for (int i = 0; i < faces.size(); i++)
+		{
+			if (count % 10 == 0)
+			{
+				Mat dst;
+				resize(frame(faces[i]), dst, Size(92, 112));
+				imwrite(format(".//image//myface//face_%d.jpg", pits), dst);
+				pits++;
+			}
 
-        Mat faceROI = frame_gray(faces[i]);
-        vector<Rect> eyes;
+			rectangle(frame, faces[i], Scalar(0, 0, 255), 2, 8, 0);
 
-        //-- 在每张人脸上检测双眼
-        eyes_cascade.detectMultiScale(faceROI, eyes, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
+		}
+		imshow("camera-demo", frame);
+		char c = waitKey(10);
+		//if (c == 27) break;
+		if (pits >= 30)break;
+		count++;
+	}
 
-        for (int j = 0; j < eyes.size(); j++)
-        {
-            Point center(faces[i].x + eyes[j].x + eyes[j].width * 0.5, faces[i].y + eyes[j].y + eyes[j].height * 0.5);
-            int radius = cvRound((eyes[j].width + eyes[i].height) * 0.25);
-            circle(frame, center, radius, Scalar(255, 0, 0), 4, 8, 0);
-        }
-    }
-    //-- 显示结果图像
-    imshow(window_name, frame);
-    
+	capture.release();
+}
+
+int FaceRecognition(string filename)
+{
+	vector<Mat> images;
+	vector<int> labels;
+	int ok = ReadFile(filename, images, labels);
+	if (ok == -1)return -1;
+
+	int height = images[0].rows;
+	int width = images[0].cols;
+	printf("height: %d, width: %d\n", height, width);
+
+	Mat testSample = images[images.size() - 1];
+	int testLabel = labels[labels.size() - 1];
+	images.pop_back();
+	labels.pop_back();
+
+	// train it
+	Ptr<BasicFaceRecognizer> model = EigenFaceRecognizer::create();
+	model->train(images, labels);
+
+	// recognition face
+	int predictedLabel = model->predict(testSample);
+	printf("actual label: %d, predict label: %d\n", testLabel, predictedLabel);
+
+	CascadeClassifier faceDetector;
+	faceDetector.load(haar_face_datapath);
+
+	VideoCapture capture(0); // open camera
+	if (!capture.isOpened())
+	{
+		cout << "could not open camera..." << endl;
+		return -1;
+	}
+	Mat frame;
+	namedWindow("face-recognition", WINDOW_AUTOSIZE);
+	vector<Rect> faces;
+	Mat dst;
+	while (capture.read(frame))
+	{
+		flip(frame, frame, 1);
+		faceDetector.detectMultiScale(frame, faces, 1.1, 1, 0, Size(80, 100), Size(380, 400));
+		for (int i = 0; i < faces.size(); i++)
+		{
+			Mat roi = frame(faces[i]);
+			cvtColor(roi, dst, COLOR_BGR2GRAY);
+			resize(dst, testSample, testSample.size());
+			int label = model->predict(testSample);
+			rectangle(frame, faces[i], Scalar(255, 0, 0), 2, 8, 0);
+			putText(frame, format("I'm %s", (label == 1 ? "Jianle" : "Unknow")), faces[i].tl(), FONT_HERSHEY_PLAIN, 1.0, Scalar(0, 0, 255), 2, 8);
+		}
+		imshow("face-recognition", frame);
+		char c = waitKey(10);
+		if (c == 27)break;
+	}
+
+	return 0;
 }
