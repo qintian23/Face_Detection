@@ -52,5 +52,8 @@
     <ClInclude Include="OnGoing.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Sift.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
