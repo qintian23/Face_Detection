@@ -153,6 +153,7 @@
     <ClInclude Include="OnGoing.h" />
     <ClInclude Include="PCA.h" />
     <ClInclude Include="PostProcessing.h" />
+    <ClInclude Include="Pyramid.h" />
     <ClInclude Include="RGBchannel.h" />
     <ClInclude Include="Sift.h" />
     <ClInclude Include="TemplateMatching.h" />

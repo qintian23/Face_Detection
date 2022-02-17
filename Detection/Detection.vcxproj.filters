@@ -55,5 +55,8 @@
     <ClInclude Include="Sift.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Pyramid.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
